@@ -25,6 +25,8 @@ If the game has bidding, enable the bid column by pressing both shoulder buttons
 | Start | Reset scores |
 | Start & Up | Reset all |
 
+![Screenshot](scorepad.png)
+
 ## Credits
 
 Design inspired by the excellent ScoreKeeper app for iOS.
