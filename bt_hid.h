@@ -22,6 +22,7 @@ void bt_main(void);
 struct bt_hid_state {
 	uint16_t buttons;
 	uint8_t pad;
+	bool connected;
 };
 
 // Get the latest controller state

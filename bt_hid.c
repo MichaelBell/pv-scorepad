@@ -99,6 +99,7 @@ static void hid_host_setup(void){
 const struct bt_hid_state default_state = {
 	.buttons = 0,
 	.pad = 0,
+	.connected = false,
 };
 
 struct bt_hid_state latest;
@@ -120,7 +121,7 @@ struct __attribute__((packed)) input_report_3 {
 static void hid_host_handle_interrupt_report(const uint8_t *packet, uint16_t packet_len){
 	static struct bt_hid_state last_state = { 0 };
 
-#if 0
+#if 1
 	printf("Report:  ");
 	for (uint16_t i = 0; i < packet_len; ++i) {
 		printf("%02x ", packet[i]);
@@ -152,7 +153,8 @@ static void hid_host_handle_interrupt_report(const uint8_t *packet, uint16_t pac
 	latest = (struct bt_hid_state){
 		// Somewhat arbitrary packing of the buttons into a single 16-bit word
 		.buttons = (((report->start_sel & 0x0c) << 8) | (report->buttons & 0xdb)),
-		.pad = (up ? 1 : 0) | (right ? 2 : 0) | (down ? 4 : 0) | (left ? 8 : 0)
+		.pad = (up ? 1 : 0) | (right ? 2 : 0) | (down ? 4 : 0) | (left ? 8 : 0),
+		.connected = true
 	};
 
 	// TODO: Parse out battery
@@ -237,6 +239,9 @@ static void packet_handler (uint8_t packet_type, uint16_t channel, uint8_t *pack
 				printf("Connection to %s failed: 0x%02x\n", bd_addr_to_str(event_addr), status);
 				bt_hid_disconnected(event_addr);
 				return;
+			}
+			else {
+				latest.connected = true;
 			}
 			hid_host_descriptor_available = false;
 			hid_host_cid = hid_subevent_connection_opened_get_hid_cid(packet);

@@ -24,21 +24,29 @@ Pen GREEN = graphics.create_pen(0, 180, 0);
 Pen RED = graphics.create_pen(180, 0, 0);
 Pen ORANGE = graphics.create_pen(200, 120, 0);
 Pen YELLOW = graphics.create_pen(200, 200, 0);
+Pen TEAL = graphics.create_pen(0, 160, 160);
+Pen PINK = graphics.create_pen(255, 127, 127);
+Pen GREY = graphics.create_pen(127, 127, 127);
 Pen WHITE = graphics.create_pen(255, 255, 255);
 
-#define MAX_PLAYERS 6
+#define MAX_PLAYERS 9
 Player players[MAX_PLAYERS] = {
     { "MIKIE", GREEN },
     { "LIZZIE", PURPLE },
     { "BARBARA", BLUE },
     { "DAVID", RED },
     { "KATHLEEN", YELLOW },
-    { "PETER", ORANGE }
+    { "PETER", ORANGE },
+    { "PAM", PINK },
+    { "PAUL", GREY },
+    { "CLAIRE", TEAL },
 };
 int num_players = MAX_PLAYERS;
 int selected = 0;
 std::array<int, MAX_PLAYERS> order;
 bool low_to_high = false;
+bool select_score = true;
+bool show_bid = false;
 int increment = 1;
 
 void reorder() {
@@ -98,13 +106,26 @@ int main() {
         //        state.buttons, state.pad);
 
         int len = graphics.measure_text("PicoVision ScorePad", 5.f);
-        graphics.text("PicoVision ScorePad", Point((FRAME_WIDTH - len) / 2, 15), FRAME_WIDTH, 5.f);
+        graphics.text("PicoVision ScorePad", Point((FRAME_WIDTH - len) / 2, 12), FRAME_WIDTH, 5.f);
 
         sprintf(str, "Increment %d, Sort %s", increment, low_to_high ? "Low to High" : "High to Low");
         graphics.text(str, Point(20, 440), FRAME_WIDTH);
 
+        if (state.connected) graphics.text("Connected", Point(618, 440), 100);
+        else graphics.text("Disconnected", Point(590, 440), 100);
+
         for (int i = 0; i < num_players; ++i) {
-            players[order[i]].draw(graphics, i, num_players, i == selected);
+            players[order[i]].draw(graphics, i, num_players, i == selected, show_bid, select_score);
+        }
+
+        if (num_players < 8 && show_bid) {
+            graphics.set_pen(WHITE);
+
+            int y = (FRAME_HEIGHT - num_players * 40) / 2 - 22;
+            int len = graphics.measure_text("Bid");
+            graphics.text("Bid", Point(500 - len/2, y), 60);
+            len = graphics.measure_text("Score");
+            graphics.text("Score", Point(580 - len/2, y), 60);
         }
 
         int pause = 0;
@@ -112,24 +133,27 @@ int main() {
             if (state.pad & PAD_UP) num_players = MAX_PLAYERS;
             for (int i = 0; i < num_players; ++i) {
                 players[i].score = 0;
+                players[i].bid = 0;
             }
             pause = 200;
         }
         else if ((state.pad & PAD_UP) && selected > 0) {
             --selected;
-            pause = 200;
+            pause = 150;
         }
         else if ((state.pad & PAD_DOWN) && selected < num_players-1) {
             ++selected;
-            pause = 200;
+            pause = 150;
         }
         else if (state.pad & PAD_LEFT) {
-            players[order[selected]].score -= increment;
-            pause = 100;
+            if (select_score) players[order[selected]].score -= increment;
+            else players[order[selected]].bid -= increment;
+            pause = 150;
         }
         else if (state.pad & PAD_RIGHT) {
-            players[order[selected]].score += increment;
-            pause = 100;
+            if (select_score) players[order[selected]].score += increment;
+            else players[order[selected]].bid += increment;
+            pause = 150;
         }
         else if (state.buttons & BUTTON_A) {
             reorder();
@@ -156,6 +180,20 @@ int main() {
         else if (state.buttons & BUTTON_SELECT) {
             low_to_high = !low_to_high;
             pause = 200;
+        }
+        else if ((state.buttons & BUTTON_L) && (state.buttons & BUTTON_R)) {
+            show_bid = !show_bid;
+            if (!show_bid) select_score = true;
+            for (int i = 0; i < num_players; ++i) {
+                players[i].bid = 0;
+            }
+           pause = 200;
+        }
+        else if ((state.buttons & BUTTON_L) && show_bid) {
+            select_score = false;
+        }
+        else if (state.buttons & BUTTON_R) {
+            select_score = true;
         }
 
         display.flip();
