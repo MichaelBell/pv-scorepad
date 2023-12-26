@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-set(NAME picovision-boilerplate)  # TODO: Change me!
+set(NAME pv-scorepad)  # TODO: Change me!
 
 include(pimoroni_pico_import.cmake)
 include(pico_sdk_import.cmake)
@@ -33,6 +33,8 @@ include(drivers/sdcard/sdcard)
 # Add your source files
 add_executable(${NAME}
     main.cpp # TODO: Add source files here!
+    player.cpp
+    bt_hid.c
 )
 
 # TODO: Don't forget to link the libraries you need!
@@ -44,6 +46,11 @@ pico_stdlib
     pimoroni_i2c
     fatfs
     sdcard
+	pico_cyw43_arch_none
+        pico_btstack_classic
+        pico_btstack_ble
+        pico_btstack_cyw43
+	pico_multicore
 )
 
 target_include_directories(${NAME} PRIVATE
@@ -57,13 +64,14 @@ target_compile_definitions(${NAME} PRIVATE
     SDCARD_PIN_SPI0_SCK=10
     SDCARD_PIN_SPI0_MOSI=11
     SDCARD_PIN_SPI0_MISO=12
+    PICO_MAX_SHARED_IRQ_HANDLERS=8
 )
 
 # create map/bin/hex file etc.
 pico_add_extra_outputs(${NAME})
 
-pico_enable_stdio_uart(${NAME} 1)
-pico_enable_stdio_usb(${NAME} 0)
+pico_enable_stdio_uart(${NAME} 0)
+pico_enable_stdio_usb(${NAME} 1)
 
 target_link_options(${NAME} PRIVATE
     -Wl,--print-memory-usage
