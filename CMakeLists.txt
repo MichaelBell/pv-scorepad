@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.12)
 
 set(NAME pv-scorepad)  # TODO: Change me!
 
+set(PICO_BOARD pico_w)
+
 include(pimoroni_pico_import.cmake)
 include(pico_sdk_import.cmake)
 

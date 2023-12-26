@@ -31,27 +31,28 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         path: project
 
     # Checkout the Pimoroni Pico Libraries
     - name: Checkout Pimoroni Pico Libraries
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         repository: pimoroni/pimoroni-pico
         path: pimoroni-pico
 
     # Checkout the Pimoroni PicoVision Libraries
     - name: Checkout Pimoroni PicoVision Libraries
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
-        repository: pimoroni/picovision
+        repository: MichaelBell/picovision
+        ref: patch-extra-compatability
         path: picovision
 
     # Checkout the Pico SDK
     - name: Checkout Pico SDK
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         repository: raspberrypi/pico-sdk
         path: pico-sdk
