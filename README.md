@@ -2,7 +2,7 @@
 
 A score pad for keeping track of your score in a card game or board game.
 
-This works with an 8BitDo Zero 2, in Android mode.
+This works with an 8BitDo Zero 2, in Android mode.  You'll need to set the address of your device in `bt_hid.c` and then pair it.  One paired, it should reconnect each time automatically.
 
 Configure the names of people you often play with in `main.cpp`, then before a game remove players that aren't playing with `Y`.
 
