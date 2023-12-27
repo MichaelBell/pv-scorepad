@@ -48,6 +48,7 @@ bool low_to_high = false;
 bool select_score = true;
 bool show_bid = false;
 int increment = 1;
+int game_round = 1;
 
 void reorder() {
     if (low_to_high) {
@@ -108,11 +109,13 @@ int main() {
         int len = graphics.measure_text("PicoVision ScorePad", 5.f);
         graphics.text("PicoVision ScorePad", Point((FRAME_WIDTH - len) / 2, 12), FRAME_WIDTH, 5.f);
 
+        sprintf(str, "Round %d", game_round);
+        graphics.text(str, Point(20, 420), FRAME_WIDTH);
         sprintf(str, "Increment %d, Sort %s", increment, low_to_high ? "Low to High" : "High to Low");
-        graphics.text(str, Point(20, 440), FRAME_WIDTH);
+        graphics.text(str, Point(20, 442), FRAME_WIDTH);
 
-        if (state.connected) graphics.text("Connected", Point(618, 440), 100);
-        else graphics.text("Disconnected", Point(590, 440), 100);
+        if (state.connected) graphics.text("Connected", Point(616, 442), 100);
+        else graphics.text("Disconnected", Point(588, 442), 100);
 
         for (int i = 0; i < num_players; ++i) {
             players[order[i]].draw(graphics, i, num_players, i == selected, show_bid, select_score);
@@ -135,6 +138,7 @@ int main() {
                 players[i].score = 0;
                 players[i].bid = 0;
             }
+            game_round = 1;
             pause = 200;
         }
         else if ((state.pad & PAD_UP) && selected > 0) {
@@ -157,6 +161,10 @@ int main() {
         }
         else if (state.buttons & BUTTON_A) {
             reorder();
+            ++game_round;
+            for (int i = 0; i < MAX_PLAYERS; ++i) {
+                players[i].bid = 0;
+            }
             pause = 200;
         }
         else if (state.buttons & BUTTON_B) {
@@ -187,7 +195,7 @@ int main() {
             for (int i = 0; i < MAX_PLAYERS; ++i) {
                 players[i].bid = 0;
             }
-           pause = 200;
+            pause = 200;
         }
         else if ((state.buttons & BUTTON_L) && show_bid) {
             select_score = false;

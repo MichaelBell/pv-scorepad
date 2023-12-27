@@ -14,7 +14,7 @@ If the game has bidding, enable the bid column by pressing both shoulder buttons
 | -------    | -------- |
 | Up/Down    | Select player |
 | Right/Left | Add/subtract score |
-| A | Sort by score |
+| A | Sort by score, increment round, clear bid |
 | B | Change score increment (cycles through 1, 5, 10) |
 | Y | Remove player |
 | X | Unremove last removed player |
