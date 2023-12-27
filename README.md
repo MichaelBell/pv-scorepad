@@ -29,4 +29,6 @@ If the game has bidding, enable the bid column by pressing both shoulder buttons
 
 ## Credits
 
+Bluetooth controller support from [PicoW DS4](https://github.com/usedbytes/picow_ds4)
+
 Design inspired by the excellent ScoreKeeper app for iOS.

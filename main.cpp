@@ -131,7 +131,7 @@ int main() {
         int pause = 0;
         if (state.buttons & BUTTON_START) {
             if (state.pad & PAD_UP) num_players = MAX_PLAYERS;
-            for (int i = 0; i < num_players; ++i) {
+            for (int i = 0; i < MAX_PLAYERS; ++i) {
                 players[i].score = 0;
                 players[i].bid = 0;
             }
@@ -184,7 +184,7 @@ int main() {
         else if ((state.buttons & BUTTON_L) && (state.buttons & BUTTON_R)) {
             show_bid = !show_bid;
             if (!show_bid) select_score = true;
-            for (int i = 0; i < num_players; ++i) {
+            for (int i = 0; i < MAX_PLAYERS; ++i) {
                 players[i].bid = 0;
             }
            pause = 200;
